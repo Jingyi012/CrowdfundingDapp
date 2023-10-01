@@ -172,8 +172,8 @@ function App() {
                   onClick={
                   () => {
                     const newgoal = parseFloat(prompt("Enter new goal in unit algo"));
-                    if(newgoal <= currentGoal){
-                      alert("The new goal must greater than current goal")
+                    if(isNaN(newgoal)){
+                      alert("The new goal must greater than 0.01");
                     } else {
                       callFundRaiseApplication2("update_goal", (newgoal*1000000));
                     }
