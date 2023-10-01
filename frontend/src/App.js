@@ -38,12 +38,6 @@ function App() {
     checkUserDonation();
     checkAllGlobalState();
 
-    if(accountAddress == creator){
-      setIsCreator(true);
-    } else {
-      setIsCreator(false);
-    }
-
     if(globalTotalFundRaised >= currentGoal){
       setGoalAchieve(true);
     } else {
@@ -89,10 +83,15 @@ function App() {
 
       if (accounts.length) {
         setAccountAddress(accounts[0]);
+        if(accountAddress == creator){
+          setIsCreator(true);
+        } else {
+          setIsCreator(false);
+        }
       }
     })
 
-  },[startDate, endDate, on_fundraising, isGoalAchieve]);
+  },[startDate, endDate, on_fundraising, isGoalAchieve, is_creator]);
   
   return (
     <div className='pageWrapper'>
@@ -197,7 +196,7 @@ function App() {
               </div>
             </div>): null}
           </> : (
-            isGoalAchieve ? (<div className="message">😊The goal has achieve, thanks for all contributors.</div>) : 
+            isGoalAchieve ? (<div className="message">😊 Goal achieved, thanks for all contributors.</div>) : 
             <div className="message">💡Please connect to wallet and opt-in if you wish to contribute.</div>
           )}
         </div>
