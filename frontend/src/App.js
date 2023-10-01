@@ -127,14 +127,14 @@ function App() {
             <div className="total-fund-text">{globalTotalFundRaised} Algos</div>
           </div>
           
-          {isConnectedToPeraWallet ? <>
-          <div className="totalUserDonation">
-            <h3>Your donation amount: </h3>
-            <div className="total-donation-text">{localDonateAmt} Algos</div>
-          </div>
-          <hr/>
-          <div class="functions">
-            {/* donation */}
+          {isConnectedToPeraWallet ? 
+          <>
+            <div className="totalUserDonation">
+              <h3>Your donation amount: </h3>
+              <div className="total-donation-text">{localDonateAmt} Algos</div>
+            </div>
+            <hr/>
+
             {on_fundraising?<>
             <form method="post" action="" id="donateInputForm" onSubmit={(e)=>{
                 e.preventDefault();
@@ -157,17 +157,46 @@ function App() {
               <button type="submit" className='donateBtn btn-primary btn'>Donate</button>
             </form>
             <hr /></> : null}
-            {/* withdrawal */}
-            {is_creator ? (
-            <Button className="withdrawBtn" id="withdrawBtn"
-              onClick={
-              // add the local deduct method
-              () => callFundRaiseApplication('withdrawAll')
-              }>
-              Withdrawal
-            </Button> )
-            : null}
-          </div></> : (
+
+            {is_creator ? 
+            (<div className="creatorFunction">
+              <h4>Creator Function:</h4>
+              <div className="creatorFunctionBtns">
+                <Button className="withdrawBtn" id="withdrawBtn"
+                  onClick={
+                  () => callFundRaiseApplication('withdrawAll')
+                  }>
+                  Withdrawal
+                </Button> 
+                <Button className="update_goal_btn" id="update_goal_btn"
+                  onClick={
+                  () => {
+                    const newgoal = parseFloat(prompt("Enter new goal in unit algo"));
+                    if(newgoal <= currentGoal){
+                      alert("The new goal must greater than current goal")
+                    } else {
+                      callFundRaiseApplication2("update_goal", (newgoal*1000000));
+                    }
+                  }
+                  }>
+                  Update Goal
+                </Button>
+                <Button className="update_end_date_btn" id="update_end_date_btn"
+                  onClick={
+                  () => {
+                    const newEndDate = parseInt(prompt("Enter new end time in unix (second)"));
+                    if(newEndDate <= startDate){
+                      alert("The new end time must greater than start time");
+                    } else {
+                      callFundRaiseApplication2("update_end_date", newEndDate);
+                    }
+                  }
+                  }>
+                  Update End Date
+                </Button>
+              </div>
+            </div>): null}
+          </> : (
             isGoalAchieve ? (<div className="message">😊The goal has achieve, thanks for all contributors.</div>) : 
             <div className="message">💡Please connect to wallet and opt-in if you wish to contribute.</div>
           )}
@@ -182,6 +211,8 @@ function App() {
       peraWallet.connector?.on('disconnect', handleDisconnectWalletClick);
 
       setAccountAddress(newAccounts[0]);
+      checkAllGlobalState();
+      checkUserDonation();
     });
   }
 
@@ -282,6 +313,51 @@ function App() {
 
         const signedTx = await peraWallet.signTransaction([actionTxGroup]);
         console.log(signedTx);
+        const { txId } = await algod.sendRawTransaction(signedTx).do();
+        const result = await waitForConfirmation(algod, txId, 2);
+        checkAllGlobalState();
+        checkUserDonation();
+      
+      } catch (e) {
+        console.error(`There was an error calling the crowdfunding app: ${e}`);
+      }
+    }
+    function intToUint8Array(value, numBytes = 8) {
+      if (numBytes <= 0 || numBytes > 8) {
+        throw new Error("Invalid number of bytes. Must be between 1 and 8.");
+      }
+    
+      // Convert the integer to a binary string with leading zeros
+      const binaryString = value.toString(2).padStart(numBytes * 8, '0');
+    
+      // Initialize an array to hold the bytes
+      const bytes = [];
+    
+      // Split the binary string into 8-bit chunks and convert to integers
+      for (let i = 0; i < numBytes; i++) {
+        const startIndex = i * 8;
+        const endIndex = startIndex + 8;
+        const byte = parseInt(binaryString.slice(startIndex, endIndex), 2);
+        bytes.push(byte);
+      }
+    
+      // Create a Uint8Array from the array of bytes
+      return new Uint8Array(bytes);
+    }
+    async function callFundRaiseApplication2(action, arg2) {
+      try {
+        const suggestedParams = await algod.getTransactionParams().do();
+        const appArgs = [new Uint8Array(Buffer.from(action)), intToUint8Array(arg2)];
+        const actionTx = algosdk.makeApplicationNoOpTxn(
+          accountAddress,
+          suggestedParams,
+          appIndex,
+          appArgs
+          );
+
+        const actionTxGroup = [{txn: actionTx, signers: [accountAddress]}];
+
+        const signedTx = await peraWallet.signTransaction([actionTxGroup]);
         const { txId } = await algod.sendRawTransaction(signedTx).do();
         const result = await waitForConfirmation(algod, txId, 2);
         checkAllGlobalState();
