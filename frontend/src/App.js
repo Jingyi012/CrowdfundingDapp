@@ -11,9 +11,9 @@ import { useEffect, useState } from 'react';
 const peraWallet = new PeraWalletConnect();
 
 // The app ID on testnet
-const appIndex = 402651856;
+const appIndex = 404166216;
 // app address
-const applicationAddress = "OBOEEYDHZO5DNOZVNDNQW7UB2LETOYCLNVUP5UHSMQIUH5K6UZYHRSDKIM";
+const applicationAddress = "P46444XOJB5GQSSIEHVR64BKKI5HQQEEJQRY6WRRQDQJ4MWIX6UDEXO6PE";
 
 // connect to the algorand node
 const algod = new algosdk.Algodv2('','https://testnet-api.algonode.cloud', 443);
@@ -37,7 +37,12 @@ function App() {
   useEffect(() => {
     checkUserDonation();
     checkAllGlobalState();
-
+    if(accountAddress == creator){
+      setIsCreator(true);
+    } else {
+      setIsCreator(false);
+    }
+    
     if(globalTotalFundRaised >= currentGoal){
       setGoalAchieve(true);
     } else {
@@ -83,11 +88,6 @@ function App() {
 
       if (accounts.length) {
         setAccountAddress(accounts[0]);
-        if(accountAddress == creator){
-          setIsCreator(true);
-        } else {
-          setIsCreator(false);
-        }
       }
     })
 
@@ -215,6 +215,11 @@ function App() {
       setAccountAddress(newAccounts[0]);
       checkAllGlobalState();
       checkUserDonation();
+      if(accountAddress == creator){
+        setIsCreator(true);
+      } else {
+        setIsCreator(false);
+      }
     });
   }
 
