@@ -119,18 +119,18 @@ function App() {
             <h3>Start Date: {startDateConvert}</h3>
             <h3>End Date: {endDateConvert}</h3>
             <h3>Goal: </h3>
-            <div className="goal-text">{currentGoal} Algos</div>
+            <div className="goal-text">{currentGoal} Algo</div>
           </div>
           <div className="totalFundRaised">
             <h3>Total Fund Raised: </h3>
-            <div className="total-fund-text">{globalTotalFundRaised} Algos</div>
+            <div className="total-fund-text">{globalTotalFundRaised} Algo</div>
           </div>
           
           {isConnectedToPeraWallet ? 
           <>
             <div className="totalUserDonation">
               <h3>Your donation amount: </h3>
-              <div className="total-donation-text">{localDonateAmt} Algos</div>
+              <div className="total-donation-text">{localDonateAmt} Algo</div>
             </div>
             <hr/>
 
@@ -143,7 +143,7 @@ function App() {
                   alert('Donation amount must be greater 0.001 Algo');
                 }
               }}>
-              <h4>Enter the amount of algos to donate: </h4>
+              <h4>Enter the amount of algo to donate: </h4>
               <input type="text" name="donateInput" id="donateInput" onChange={(e)=> {
                 const inputValue = e.target.value;
                 const parsedValue = parseFloat(inputValue);
@@ -170,7 +170,7 @@ function App() {
                 <Button className="update_goal_btn" id="update_goal_btn"
                   onClick={
                   () => {
-                    const newgoal = parseFloat(prompt("Enter new goal in unit algo"));
+                    const newgoal = parseFloat(prompt("Enter new goal in unit Algo"));
                     if(isNaN(newgoal)){
                       alert("The new goal must greater than 0.01");
                     } else {
