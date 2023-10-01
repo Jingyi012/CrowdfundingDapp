@@ -30,6 +30,7 @@ function App() {
   const [donateAmt, setDonateAmt] = useState(0);
   const [startDateConvert, setStartDateConvert] = useState("");
   const [endDateConvert, setEndDateConvert] = useState("");
+  const [isGoalAchieve, setGoalAchieve] = useState(false);
   const isConnectedToPeraWallet = !!accountAddress;
 
   useEffect(() => {
@@ -40,6 +41,12 @@ function App() {
       setIsCreator(true);
     } else {
       setIsCreator(false);
+    }
+
+    if(globalTotalFundRaised >= currentGoal){
+      setGoalAchieve(true);
+    } else {
+      setGoalAchieve(false);
     }
 
     const sdate = new Date(startDate * 1000);
@@ -73,79 +80,82 @@ function App() {
   },[startDate, endDate]);
   
   return (
-    <Container className='App-header'>
-      <meta name="name" content="Crowdfunding" />
-      <h1> Crowdfunding Application</h1>
-      <div class="walletBtns">
-        {isConnectedToPeraWallet ? (<div>Hi, {accountAddress}</div>) : ""}
-        <Button className="btn-wallet"
-          onClick={
-            isConnectedToPeraWallet ? handleDisconnectWalletClick : handleConnectWalletClick
-          }>
-          {isConnectedToPeraWallet ? "Disconnect" : "Connect to Pera Wallet"}
-        </Button>
-        <Button className="btn-wallet"
-          onClick={
-            () => optInToApp()
-          }>
-          Opt-in
-        </Button>
-      </div>
-
-      <div className="appContainer">
-        <div className="FundRaiseInfo">
-          <h3>Goal: {currentGoal} Algos</h3>
-          <h3>Start Date: {startDateConvert}</h3>
-          <h3>End Date: {endDateConvert}</h3>
-        </div>
-        <div className="totalFundRaised">
-          <h3>Total Fund Raised: </h3>
-          <span className="total-fund-text">{globalTotalFundRaised} Algos</span>
-        </div>
-
-        {isConnectedToPeraWallet ? <>
-        <div className="totalUserDonation">
-          <h3>Your donation amount: </h3>
-          <span className="total-donation-txt">{localDonateAmt} Algos</span>
-        </div>
-        <div class="functionBtns">
-          {/* donation */}
-          <form method="post" action="" id="donateInputForm" onSubmit={(e)=>{
-              e.preventDefault();
-              if(donateAmt > 0.001){
-                makeDonation('donate', donateAmt*1000000);
-              } else{
-                alert('Donation amount must be greater 0.01 Algo');
-              }
-            }}>
-            <label for="donateInput">Enter the amount of algos to donate: </label>
-            <input type="text" name="donateInput" id="donateInput" onChange={(e)=> {
-              const inputValue = e.target.value;
-              const parsedValue = parseFloat(inputValue);
-              if (!isNaN(parsedValue)) {
-                setDonateAmt(parsedValue);
-              } else {
-                setDonateAmt(0);
-              }
-              }}/>
-            <button type="submit" className='donateBtn'>Donate</button>
-          </form>
-          {/* withdrawal */}
-          {is_creator ? (
-          <Button className="withdrawBtn" id="withdrawBtn"
+    <div className='pageWrapper'>
+      <div class="pageContainer">
+        <meta name="name" content="Crowdfunding" />
+        <h1> Crowdfunding Application</h1>
+        <div class="walletBtns">
+          {isConnectedToPeraWallet ? (<div>Hi, {accountAddress}</div>) : ""}
+          <Button className="btn-wallet"
             onClick={
-            // add the local deduct method
-            () => callFundRaiseApplication('withdrawAll')
+              isConnectedToPeraWallet ? handleDisconnectWalletClick : handleConnectWalletClick
             }>
-            Withdrawal
-          </Button> )
-          : null}
-        </div></> : (
-          <div>Please connect to wallet if you wish to donate.</div>
-        )}
-      </div>
+            {isConnectedToPeraWallet ? "Disconnect" : "Connect to Pera Wallet"}
+          </Button>
+          <Button className="btn-wallet"
+            onClick={
+              () => optInToApp()
+            }>
+            Opt-in
+          </Button>
+        </div>
 
-    </Container>
+        <div className="fundInfoContainer">
+          <div className="FundRaiseInfo">
+            <h3>Start Date: {startDateConvert}</h3>
+            <h3>End Date: {endDateConvert}</h3>
+            <h3>Goal: </h3>
+            <div className="goal-text">{currentGoal} Algos</div>
+          </div>
+          <div className="totalFundRaised">
+            <h3>Total Fund Raised: </h3>
+            <div className="total-fund-text">{globalTotalFundRaised} Algos</div>
+          </div>
+
+          {isConnectedToPeraWallet ? <>
+          <div className="totalUserDonation">
+            <h3>Your donation amount: </h3>
+            <span className="total-donation-txt">{localDonateAmt} Algos</span>
+          </div>
+          <div class="functionBtns">
+            {/* donation */}
+            <form method="post" action="" id="donateInputForm" onSubmit={(e)=>{
+                e.preventDefault();
+                if(donateAmt > 0.001){
+                  makeDonation('donate', donateAmt*1000000);
+                } else{
+                  alert('Donation amount must be greater 0.01 Algo');
+                }
+              }}>
+              <label for="donateInput">Enter the amount of algos to donate: </label>
+              <input type="text" name="donateInput" id="donateInput" onChange={(e)=> {
+                const inputValue = e.target.value;
+                const parsedValue = parseFloat(inputValue);
+                if (!isNaN(parsedValue)) {
+                  setDonateAmt(parsedValue);
+                } else {
+                  setDonateAmt(0);
+                }
+                }}/>
+              <button type="submit" className='donateBtn'>Donate</button>
+            </form>
+            {/* withdrawal */}
+            {is_creator ? (
+            <Button className="withdrawBtn" id="withdrawBtn"
+              onClick={
+              // add the local deduct method
+              () => callFundRaiseApplication('withdrawAll')
+              }>
+              Withdrawal
+            </Button> )
+            : null}
+          </div></> : (
+            isGoalAchieve ? (<div className="message">😊The goal has achieve, thanks for all contributors.</div>) : 
+            <div className="message">💡Please connect to wallet and opt-in if you wish to contribute.</div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 
   function handleConnectWalletClick() {
@@ -260,7 +270,7 @@ function App() {
         checkUserDonation();
       
       } catch (e) {
-        console.error(`There was an error calling the counter app: ${e}`);
+        console.error(`There was an error calling the crowdfunding app: ${e}`);
       }
     }
 

@@ -16,16 +16,22 @@
 .h1 {
   text-align: center;
 }
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.pageWrapper {
+  background-color: rgb(210, 235, 255);
+  width: 100vw;
+  height: 100vh;
+  padding: 3rem 0;
+}
+.pageContainer{
+  border-radius: 20px;
+  background-color: rgb(242, 248, 255);
+  width: fit-content;
+  margin: 0 auto;
+  padding: 60px;
   display: flex;
-  text-align: center;
-  align-items: right;
   flex-direction: column;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
 .btn-wallet {
@@ -33,24 +39,32 @@
   align-self: right;
   margin: 1em;
 }
-
-.counter-text {
+.goal-text{
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: rgb(0, 0, 0);
   vertical-align: center;
   text-align: center;
+  background-color: rgb(173, 213, 255);
+  padding: 10px;
+  margin: 5px auto;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+}
+.total-fund-text {
+  font-size: calc(10px + 2vmin);
+  color: rgb(0, 0, 0);
+  vertical-align: center;
+  text-align: center;
+  background-color: aquamarine;
+  padding: 10px;
+  margin: 5px auto;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
-.btn-add {
-  max-width: 6em;
-  align-self: right;
-  margin: 1em;
-}
-
-.btn-dec {
-  max-width: 6em;
-  align-self: left;
-  margin: 1em;
+.message{
+  margin: 20px;
+  font-size: 20px;
+  width: 500px;
 }
 
 .App-link {
