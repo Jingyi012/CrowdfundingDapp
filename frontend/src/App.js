@@ -91,7 +91,7 @@ function App() {
       }
     })
 
-  },[startDate, endDate, on_fundraising, isGoalAchieve, is_creator]);
+  },[startDate, endDate, on_fundraising, isGoalAchieve, is_creator, currentGoal,globalTotalFundRaised]);
   
   return (
     <div className='pageWrapper'>
@@ -172,7 +172,7 @@ function App() {
                   () => {
                     const newgoal = parseFloat(prompt("Enter new goal in unit Algo"));
                     if(isNaN(newgoal)){
-                      alert("The new goal must greater than 0.01");
+                      return;
                     } else {
                       callFundRaiseApplication2("update_goal", (newgoal*1000000));
                     }
@@ -184,6 +184,9 @@ function App() {
                   onClick={
                   () => {
                     const newEndDate = parseInt(prompt("Enter new end time in unix (second)"));
+                    if (isNaN(newEndDate)) {
+                      return;
+                    }
                     if(newEndDate <= startDate){
                       alert("The new end time must greater than start time");
                     } else {
