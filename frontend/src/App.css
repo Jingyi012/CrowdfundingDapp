@@ -18,8 +18,8 @@
 }
 .pageWrapper {
   background-color: rgb(210, 235, 255);
-  width: 100vw;
-  height: 100vh;
+  min-width: 100vw;
+  min-height: 100vh;
   padding: 3rem 0;
 }
 .pageContainer{
@@ -34,37 +34,68 @@
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
+.walletAddress{
+  width: 500px;
+  overflow-wrap: break-word;
+  border: 2px solid rgb(179, 0, 255)(253, 211, 211);
+  font-size: 18px;
+}
+
 .btn-wallet {
   max-width: 12em;
   align-self: right;
   margin: 1em;
 }
-.goal-text{
-  font-size: calc(10px + 2vmin);
-  color: rgb(0, 0, 0);
-  vertical-align: center;
-  text-align: center;
-  background-color: rgb(173, 213, 255);
-  padding: 10px;
-  margin: 5px auto;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
+.fundInfoContainer{
+  width: 500px;
 }
-.total-fund-text {
+
+.goal-text, .total-fund-text, .total-donation-text {
   font-size: calc(10px + 2vmin);
   color: rgb(0, 0, 0);
   vertical-align: center;
   text-align: center;
-  background-color: aquamarine;
   padding: 10px;
   margin: 5px auto;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.goal-text{
+  background-color: rgb(173, 213, 255);
+}
+
+.total-fund-text{
+  background-color: rgb(176, 255, 176);
+}
+
+.total-donation-text{
+  background-color: bisque;
 }
 
 .message{
   margin: 20px;
   font-size: 20px;
   width: 500px;
+}
+
+#donateInput{
+  display: block;
+  width: 100%;
+  height: 50px;
+  font-size: 20px;
+  padding: 5px 10px;
+  border: none;
+  background-color: rgb(231, 231, 231);
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+#donateInputForm{
+  display: flex;
+  flex-direction: column;
+}
+.donateBtn{
+  margin: 10px auto;
+  
 }
 
 .App-link {

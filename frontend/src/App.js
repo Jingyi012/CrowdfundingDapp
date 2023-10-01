@@ -31,6 +31,7 @@ function App() {
   const [startDateConvert, setStartDateConvert] = useState("");
   const [endDateConvert, setEndDateConvert] = useState("");
   const [isGoalAchieve, setGoalAchieve] = useState(false);
+  const [on_fundraising, setOnFundraising] = useState(true);
   const isConnectedToPeraWallet = !!accountAddress;
 
   useEffect(() => {
@@ -47,6 +48,20 @@ function App() {
       setGoalAchieve(true);
     } else {
       setGoalAchieve(false);
+    }
+
+    function getCurrentUnixTimestamp() {
+      const currentTimestamp = new Date().getTime() / 1000;
+      return Math.floor(currentTimestamp);
+    }
+    
+    const unixTimestamp = getCurrentUnixTimestamp();
+
+    //check on fundraising period and not reach goal
+    if(unixTimestamp <= endDate && !isGoalAchieve){
+      setOnFundraising(true);
+    } else {
+      setOnFundraising(false);
     }
 
     const sdate = new Date(startDate * 1000);
@@ -84,8 +99,8 @@ function App() {
       <div class="pageContainer">
         <meta name="name" content="Crowdfunding" />
         <h1> Crowdfunding Application</h1>
+        {isConnectedToPeraWallet ? (<div className="walletAddress">Hi, {accountAddress}</div>) : ""}
         <div class="walletBtns">
-          {isConnectedToPeraWallet ? (<div>Hi, {accountAddress}</div>) : ""}
           <Button className="btn-wallet"
             onClick={
               isConnectedToPeraWallet ? handleDisconnectWalletClick : handleConnectWalletClick
@@ -111,23 +126,25 @@ function App() {
             <h3>Total Fund Raised: </h3>
             <div className="total-fund-text">{globalTotalFundRaised} Algos</div>
           </div>
-
+          
           {isConnectedToPeraWallet ? <>
           <div className="totalUserDonation">
             <h3>Your donation amount: </h3>
-            <span className="total-donation-txt">{localDonateAmt} Algos</span>
+            <div className="total-donation-text">{localDonateAmt} Algos</div>
           </div>
-          <div class="functionBtns">
+          <hr/>
+          <div class="functions">
             {/* donation */}
+            {on_fundraising?<>
             <form method="post" action="" id="donateInputForm" onSubmit={(e)=>{
                 e.preventDefault();
                 if(donateAmt > 0.001){
                   makeDonation('donate', donateAmt*1000000);
                 } else{
-                  alert('Donation amount must be greater 0.01 Algo');
+                  alert('Donation amount must be greater 0.001 Algo');
                 }
               }}>
-              <label for="donateInput">Enter the amount of algos to donate: </label>
+              <h4>Enter the amount of algos to donate: </h4>
               <input type="text" name="donateInput" id="donateInput" onChange={(e)=> {
                 const inputValue = e.target.value;
                 const parsedValue = parseFloat(inputValue);
@@ -137,8 +154,9 @@ function App() {
                   setDonateAmt(0);
                 }
                 }}/>
-              <button type="submit" className='donateBtn'>Donate</button>
+              <button type="submit" className='donateBtn btn-primary btn'>Donate</button>
             </form>
+            <hr /></> : null}
             {/* withdrawal */}
             {is_creator ? (
             <Button className="withdrawBtn" id="withdrawBtn"
