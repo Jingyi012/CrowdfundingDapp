@@ -92,7 +92,7 @@ function App() {
       }
     })
 
-  },[startDate, endDate]);
+  },[startDate, endDate, on_fundraising, isGoalAchieve]);
   
   return (
     <div className='pageWrapper'>
